@@ -121,3 +121,18 @@ Ceph能够有效地进行分布式数据读取的一个很重要的原因是：�
 1. The Monitor Map：包括了Cluster fsid、位置、name address以及每个monitor的端口。也保存着当前的更新点（Ceph Cluster的变动会导致拓扑结构的变动，称之为epoch）。如果要查看一个monitor map，可以运行命令：`ceph mon dump`。
 
 2. The OSD Map：包含了Cluster的fsid、当前map创建时间、最后修改时间、存储池列表、PG数目、OSDs列表及其状态（eg., up, in）。如果要查看一个OSD map，可以运行`ceph osd dump`。
+
+3. The PG Map：包含了PG（placement group）版本、时间戳、最新的OSD map更新点、满载率。此外，还记录了每个PG详细信息：PG ID、Up Set、Acting Set、PG的状态（比如active + clean）、每个存储池中的数据使用频率统计。
+
+4. The CRUSH Map：包含了一系列存储设备以及失败的层次（比如一个设备、主机、机架、一排、一个机房都出现了故障）、以及数据在层次之间的传输规则。如果要查看一个CRUSH map，可以执行以下命令。当拿到解析之后的CRUSH map之后，可以通过`cat`命令进行查看，或者直接用文本编辑器打开。
+
+    ceph osd getcrushmap -o {filename}
+    crushtool -d {comp-crushmap-filename} -o {decomp-crushmap-filename}
+
+5. The MDS Map：包含了当前的MDS Map更新点。这个MDS map也包含了存储metadata的存储池、metadata服务器列表、以些这些服务器的状态。如果要查看MDS map的状态，可以执行`ceph mds dump`。
+
+每个map都维护着自己不断被更改的历史记录。Ceph Monitors维护着cluster map的备份（这里面包含着cluster成员、状态、更改记录、Ceph Storage Cluster的健康状态）。
+
+### 高可靠的Monitors
+
+
