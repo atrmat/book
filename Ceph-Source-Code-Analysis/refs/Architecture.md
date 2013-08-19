@@ -34,6 +34,9 @@ Ceph的功能结构如图1.1所示。
 
 从图1.1中，可以看出Ceph主要是基于[RADOS](./pdfs/weil-rados-pdsw07.pdf)文件系统实现了其功能。
 
+*注意：RADOS可以参考论文《[RADOS: A Scalable, Reliable Storage Service for Petabyte-scale
+Storage Clusters](./pdfs/weil-rados-pdsw07.pdf)》*
+
 # 2 The Ceph Storage Cluster
 
 Ceph在RADOS文件系统的基础上，能够提供一个无限扩张的Ceph Storage Cluster。
@@ -108,3 +111,13 @@ Ceph作为一个高可用、高扩展性的存储系统，肯定是不能采用�
 不管是Ceph Client还是Ceph OSD Daemons，都是利用了CRUSH算法来定位需要的数据的具体位置，而不是再去查“记录了整个集群信息的表单”。
 
 CRUSH提供的数据管理策略，比以往实现的方法都要好。这种“去中心化”的策略，能够带来良好的扩展性。无论是Ceph Client还是Ceph OSD Daemons查找数据，都是将这个查找定位的工作量分布到整个集群中。此外，CRUSH还利用了弹性的数据复制方案。这种灵活性，可以很轻易将Ceph地扩展至大规模集群。下面将大致介绍CRUSH的操作流程，详细的参考资料请阅读论文《[CRUSH - Controlled, Scalable, Decentralized Placement of Replicated Data](./pdfs/weil-rados-pdsw07.pdf)》。
+
+### Cluster Map
+
+Ceph能够有效地进行分布式数据读取的一个很重要的原因是：假设数据读取方完全了解Cluster的拓扑结构。这也就意味着Ceph Client和Ceph OSD Daemon都了解Cluster的拓扑结构。在读取数据时，就可以直接向相应的Ceph Node要数据了。
+
+那么，Ceph Cluster的拓扑结构是怎么样的呢？首先其拓扑结构，在Ceph中命名Cluster Map。而Cluster Map是如下几种Map的统称：
+
+1. The Monitor Map：包括了Cluster fsid、位置、name address以及每个monitor的端口。也保存着当前的更新点（Ceph Cluster的变动会导致拓扑结构的变动，称之为epoch）。如果要查看一个monitor map，可以运行命令：`ceph mon dump`。
+
+2. The OSD Map：包含了Cluster的fsid、当前map创建时间、最后修改时间、存储池列表、PG数目、OSDs列表及其状态（eg., up, in）。如果要查看一个OSD map，可以运行`ceph osd dump`。
