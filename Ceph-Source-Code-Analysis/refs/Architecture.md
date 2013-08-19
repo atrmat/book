@@ -39,7 +39,7 @@ Ceph的功能结构如图1.1所示。
 Ceph在RADOS文件系统的基础上，能够提供一个无限扩张的Ceph Storage Cluster。
 Ceph能够提供这么强大的数据功能，那么问题是：Ceph是如何定位一个数据块的呢？
 对于Storage Cluster Clients和Ceph OSD Daemon而言，都需要精确地定位一个数据
-块的位置。此时就需要借助于CRUSH算法。CRUSH算法并不需要去查看一张“居于中心管
+块的位置。此时就需要借助于**CRUSH算法**。CRUSH算法并不需要去查看一张“居于中心管
 理记录地位的表单”，就可以计算出数据存放的位置。对于上层应用程序而言，Ceph还
 提供了“native”的Ceph Storage Cluster的接口librados。此外，一系列服务与程序
 都基于librados与RADOS进行交互。
