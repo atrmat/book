@@ -139,4 +139,4 @@ Ceph能够有效地进行分布式数据读取的一个很重要的原因是：�
 
 一种最简单的办法是：一个Ceph Storage Cluster中只安装一个Ceph Cluster Monitor。这种偷懒的策略会带来单点失效的问题（假如Monitor节点宕机，那么无论是Ceph Client还是Ceph OSD Daemons都无法读取数据）。
 
-
+为了增加可靠性以及容错性，Ceph支持将Monitors部署成一个集群。在一个Monitors集群中，
