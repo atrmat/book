@@ -28,11 +28,11 @@ Ceph的功能结构如图1.1所示。
 
 *注意：FUSE是指Filesystem in Userspace。*
 
-![Ceph系统功能结构图](../images/architecture.png "Ceph存储系统功能结构图")
+![Ceph系统功能结构图](./images/architecture.png "Ceph存储系统功能结构图")
 
 图1.1  Ceph系统功能结构图
 
-从图1.1中，可以看出Ceph主要是基于[RADOS](../pdfs/weil-rados-pdsw07.pdf)文件系统实现了其功能。
+从图1.1中，可以看出Ceph主要是基于[RADOS](./pdfs/weil-rados-pdsw07.pdf)文件系统实现了其功能。
 
 # 2 The Ceph Storage Cluster
 
@@ -62,7 +62,7 @@ Ceph并不去计较这些数据是从哪里得到的，统一地把这些数据�
 这也就意味着Ceph的存储经历了：Object->File->Disk的流程。
 如图1.2所示：
 
-![对象存储流程图](../images/object-file-disk.png "对象存储流程图")
+![对象存储流程图](./images/object-file-disk.png "对象存储流程图")
 
 图1.2  对象存储流程图
 
@@ -73,7 +73,7 @@ Ceph OSD Daemons将所有的数据都当成对象存储在一个平面名称空�
 - Binary Data：二进制数据，是对象文件数据本身。
 - metadata：metadata一般是称之为数据的信息，也称为数据的数据。主要是由一系列健值对构成。metadata主要是在Filesystem中用得比较多，比如文件所有者、创建日期、最近修改日期等等。
 
-![对象文件示意图](../images/id-binary-metadata.png "对象文件示意图")
+![对象文件示意图](./images/id-binary-metadata.png "对象文件示意图")
 
 图1.3  对象文件示意图
 
@@ -105,4 +105,6 @@ Ceph作为一个高可用、高扩展性的存储系统，肯定是不能采用�
 - Ceph客户端程序：使用Ceph系统的人，把数据存放至Ceph中。
 - Ceph OSD Daemons：Ceph OSD Daemons为什么需要经常性地存取数据呢？主要因为Ceph OSD Daemons需要在Ceph Nodes之间同步与复制数据。
 
+不管是Ceph Client还是Ceph OSD Daemons，都是利用了CRUSH算法来定位需要的数据的具体位置，而不是再去查“记录了整个集群信息的表单”。
 
+CRUSH提供的数据管理策略，比以往实现的方法都要好。这种“去中心化”的策略，能够带来良好的扩展性。无论是Ceph Client还是Ceph OSD Daemons查找数据，都是将这个查找定位的工作量分布到整个集群中。此外，CRUSH还利用了弹性的数据复制方案。这种灵活性，可以很轻易将Ceph地扩展至大规模集群。下面将大致介绍CRUSH的操作流程，详细的参考资料请阅读论文《[CRUSH - Controlled, Scalable, Decentralized Placement of Replicated Data](./pdfs/weil-rados-pdsw07.pdf)》。
