@@ -11,8 +11,8 @@ Ceph的数据容量已持续爆炸性增长到拍字节（Petabytes）和艾字�
 
 ## 三个重要组成部分
 
-    - Ceph Node：构成存储所必须的硬件及相应的守护进程。
-    - Ceph Storage Cluster：由一系列的Ceph Node组成，位于Cluster中的Ceph Node会相互通信以保持数据的备份及动态地分发。
-    - Ceph Monitor：Ceph Monitor也是由一系列节点组成，只不过其功能主要是用于监控位于Ceph Storage Cluster中的Ceph Node。可能会问，位于Ceph Monitor中的节点是否也是要监控呢？答案是Ceph Monitor Cluster内部已经采用了高可用的机制。
+- Ceph Node：构成存储所必须的硬件及相应的守护进程。
+- Ceph Storage Cluster：由一系列的Ceph Node组成，位于Cluster中的Ceph Node会相互通信以保持数据的备份及动态地分发。
+- Ceph Monitor：Ceph Monitor也是由一系列节点组成，只不过其功能主要是用于监控位于Ceph Storage Cluster中的Ceph Node。可能会问，位于Ceph Monitor中的节点是否也是要监控呢？答案是Ceph Monitor Cluster内部已经采用了高可用的机制。
 
-![](ebook/images/architecture.png)
+![](Ceph-Source-Code-Analysis/images/architecture.png)
