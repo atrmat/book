@@ -135,4 +135,8 @@ Ceph能够有效地进行分布式数据读取的一个很重要的原因是：�
 
 ### 高可靠的Monitors
 
+在Ceph Clients或者Ceph OSD Daemons开始读或者写数据之前，需要向Cluster Monitor获取当前最新状态的Cluster Map。有了最新的Cluster Map才能保证读或者写的数据是正常的。由于在读写数据之前，需要先与Cluster Monitor打交道，所以需要保证Cluster Monitor的高可靠性。
+
+一种最简单的办法是：一个Ceph Storage Cluster中只安装一个Ceph Cluster Monitor。这种偷懒的策略会带来单点失效的问题（假如Monitor节点宕机，那么无论是Ceph Client还是Ceph OSD Daemons都无法读取数据）。
+
 
