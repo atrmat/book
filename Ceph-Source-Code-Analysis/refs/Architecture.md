@@ -103,6 +103,6 @@ Ceph作为一个高可用、高扩展性的存储系统，肯定是不能采用�
 
 对于Ceph系统而言，主要是有两类程序需要不停地存取数据：
 - Ceph客户端程序：使用Ceph系统的人，把数据存放至Ceph中。
-- Ceph OSD Daemons：Ceph OSD Daemons为什么需要经常性地存取数据呢？主要因为Ceph OSD Daemons需要同步与复制数据。
+- Ceph OSD Daemons：Ceph OSD Daemons为什么需要经常性地存取数据呢？主要因为Ceph OSD Daemons需要在Ceph Nodes之间同步与复制数据。
 
 
