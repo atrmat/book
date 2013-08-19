@@ -22,7 +22,9 @@ Ceph的数据容量已持续爆炸性增长到拍字节（Petabytes）和艾字�
 - 块存储：（reliable block device, RBD）一个可靠、完全分布式的块设备。并且提供了Linux Kernel Client，以及QEMU/KVM相应的驱动。
 - Ceph FS：（Ceph file system, CEPHFS）兼容POSIX的分布式文件系统。给Linux Kernel提供了客户端工具，并且同时支持[FUSE](http://fuse.sourceforge.net/)。
 
-Ceph的功能结构如图1.1所示。除了Ceph的三个目标之外，此外还有一个功能是直接提供给应用程序。只不过此时实际功能直接是由底层的RADOS提供，其接口命名为LIBRADOS。
+Ceph的功能结构如图1.1所示。
+除了Ceph的三个目标之外，此外还有一个功能是直接提供给应用程序。
+只不过此时实际功能直接是由底层的RADOS提供，其接口命名为LIBRADOS。
 
 *注意：FUSE是指Filesystem in Userspace。*
 
@@ -32,7 +34,15 @@ Ceph的功能结构如图1.1所示。除了Ceph的三个目标之外，此外还
 
 从图1.1中，可以看出Ceph主要是基于[RADOS](../pdfs/weil-rados-pdsw07.pdf)文件系统实现了其功能。
 
-# The Ceph Storage Cluster
+# 2 The Ceph Storage Cluster
 
 Ceph在RADOS文件系统的基础上，能够提供一个无限扩张的Ceph Storage Cluster。
+Ceph能够提供这么强大的数据功能，那么问题是：Ceph是如何定位一个数据块的呢？
+对于Storage Cluster Clients和Ceph OSD Daemon而言，都需要精确地定位一个数据
+块的位置。此时就需要借助于CRUSH算法。CRUSH算法并不需要去查看一张“居于中心管
+理记录地位的表单”，就可以计算出数据存放的位置。对于上层应用程序而言，Ceph还
+提供了“native”的Ceph Storage Cluster的接口librados。此外，一系列服务与程序
+都基于librados与RADOS进行交互。
 
+*注意：Ceph OSD Daemon：管理一个逻辑磁盘的后台运行服务。OSD主要是指一个逻辑磁盘。
+然而，在Ceph中，经常是把OSD与Ceph OSD Daemon混合使用，这两者很有可能都是指这个后台服务。*
