@@ -39,10 +39,33 @@ Ceph的功能结构如图1.1所示。
 Ceph在RADOS文件系统的基础上，能够提供一个无限扩张的Ceph Storage Cluster。
 Ceph能够提供这么强大的数据功能，那么问题是：Ceph是如何定位一个数据块的呢？
 对于Storage Cluster Clients和Ceph OSD Daemon而言，都需要精确地定位一个数据
-块的位置。此时就需要借助于**CRUSH算法**。CRUSH算法并不需要去查看一张“居于中心管
+块的位置。此时就需要借助于CRUSH算法。CRUSH算法并不需要去查看一张“居于中心管
 理记录地位的表单”，就可以计算出数据存放的位置。对于上层应用程序而言，Ceph还
 提供了“native”的Ceph Storage Cluster的接口librados。此外，一系列服务与程序
 都基于librados与RADOS进行交互。
 
 *注意：Ceph OSD Daemon：管理一个逻辑磁盘的后台运行服务。OSD主要是指一个逻辑磁盘。
 然而，在Ceph中，经常是把OSD与Ceph OSD Daemon混合使用，这两者很有可能都是指这个后台服务。*
+
+## 存储数据
+
+对于Ceph存储系统而言，数据的来源主要有四种：
+- Ceph Block Device
+- Ceph Object Storage
+- Ceph Filesystem
+- APP based on librados
+
+Ceph并不去计较这些数据是从哪里得到的，统一地把这些数据当作对象进行存储。
+对象只是抽象的称呼而已，实际上指的是文件系统上的一个文件。这个文件最终将
+存放在存储设备上。在底层上，主要是由Ceph OSD Daemons来处理存储设备上
+的读写操作。这也就意味着Ceph的存储经历了：Object->File->Disk的流程。如图
+1.2所示：
+
+![对象存储流程图](../images/object-file-disk.png "对象存储流程图")
+
+图1.2  对象存储流程图
+
+
+
+
+
