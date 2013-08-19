@@ -71,8 +71,14 @@ Ceph OSD Daemons将所有的数据都当成对象存储在一个平面名称空�
 一个对象文件有Identifier、Binary Data、以及metadata
 （metadata一般是称之为数据的信息，也称为数据的数据。主要是由一系列健值对构成）。
 metadata主要是在Filesystem中用得比较多，比如文件所有者、创建日期、最近修改日期等等。
+
+![对象文件示意图](../images/id-binary-metadata.png "对象文件示意图")
+
+图1.3  对象文件示意图
+
 *注意：identifier也就是通常意义上指的ID，对象的ID是针对整个Cluster而言的。
 需要保证在一个Cluster中，其ID也是唯一的。*
+
 
 ## 扩展性与高可用性
 
@@ -89,7 +95,7 @@ Ceph作为一个高可用、高扩展性的存储系统，肯定是不能采用�
 - 高可用性：Ceph OSD Daemons在存储对象时，除了在它所管理的存储设备上存放数据之外，还会将此数据复制至其他节点，以保证数据的高安全性。
 - 高可靠性：Ceph系统除了Storage Cluster之外，还有Monitor Cluster。Monitor Cluster会监控Storage Cluster的运行状态。此外，Monitor Cluster自身也有相应的高可靠机制。
 
-那么，Ceph是如何达到这些目标的呢？主要是利用了**CRUSH算法**。
+那么，Ceph是如何达到这些目标的呢？主要是利用了__CRUSH算法__。
 
 
 
