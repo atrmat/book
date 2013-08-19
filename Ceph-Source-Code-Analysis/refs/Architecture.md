@@ -22,10 +22,17 @@ Ceph的数据容量已持续爆炸性增长到拍字节（Petabytes）和艾字�
 - 块存储：（reliable block device, RBD）一个可靠、完全分布式的块设备。并且提供了Linux Kernel Client，以及QEMU/KVM相应的驱动。
 - Ceph FS：（Ceph file system, CEPHFS）兼容POSIX的分布式文件系统。给Linux Kernel提供了客户端工具，并且同时支持[FUSE](http://fuse.sourceforge.net/)。
 
+Ceph的功能结构如图1.1所示。除了Ceph的三个目标之外，此外还有一个功能是直接提供给应用程序。只不过此时实际功能直接是由底层的RADOS提供，其接口命名为LIBRADOS。
+
 *注意：FUSE是指Filesystem in Userspace。*
 
 ![Ceph系统功能结构图](../images/architecture.png "Ceph存储系统功能结构图")
 
 图1.1  Ceph系统功能结构图
 
+从图1.1中，可以看出Ceph主要是基于[RADOS](../pdfs/weil-rados-pdsw07.pdf)文件系统实现了其功能。
+
+# The Ceph Storage Cluster
+
+Ceph在RADOS文件系统的基础上，能够提供一个无限扩张的Ceph Storage Cluster。
 
