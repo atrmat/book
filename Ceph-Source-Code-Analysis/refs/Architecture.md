@@ -17,7 +17,12 @@ Ceph的数据容量已持续爆炸性增长到拍字节（Petabytes）和艾字�
 
 ## Ceph功能结构图
 
-如图1.1所示
+按照Ceph的目标，其功能主要是分为三方面：
+- 对象存储：（reliable, autonomic, distributed object store gateway, RADOSGW）一个基于桶的REST端口，能够兼容S3（亚马逊提供的对象存储接口）、及Swift接口（OpenStack提供的对象存储接口）。
+- 块存储：（reliable block device, RBD）一个可靠、完全分布式的块设备。并且提供了Linux Kernel Client，以及QEMU/KVM相应的驱动。
+- Ceph FS：（Ceph file system, CEPHFS）兼容POSIX的分布式文件系统。给Linux Kernel提供了客户端工具，并且同时支持[FUSE](http://fuse.sourceforge.net/)。
+
+*注意：FUSE是指Filesystem in Userspace。*
 
 ![Ceph系统功能结构图](../images/architecture.png "Ceph存储系统功能结构图")
 
