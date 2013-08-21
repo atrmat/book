@@ -142,3 +142,9 @@ Ceph能够有效地进行分布式数据读取的一个很重要的原因是：�
 为了增加可靠性以及容错性，Ceph支持将Monitors部署成一个集群。在一个Monitors集群中，由于各种潜在的因素，会导致一个或者多个Monitors失效，或者因为Monitors之沟通不同步，以致于不能监控整个Storage Cluster的状态。针对这种情况，在各个Monitor之间，需要达成一定的协议，从而可以统一地监控整个Ceph集群的状态。Ceph除了利用多个Monitors结点之外，还采用了[Paxos](http://en.wikipedia.org/wiki/Paxos_(computer_science))算法来建立不同Monitor结点之间的一致性，从而每个Monitor结点都可以拿到当前Ceph状态，并且拿到的信息是一致的，不同Monitor结点之间不会有差异。
 
 那么这些Monitors是如何配置的呢？请参考《[Monitor Config Reference](http://ceph.com/docs/master/rados/configuration/mon-config-ref/)》。
+
+### 高可靠的认证
+
+Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnons、Ceph Metadata Servers（这些结点之间也应该有认证信息）。在认证时，主要是采用了Ceph Kerberos似类的认证协议，称之为`cephx`。只有经过认证的用户者可以读、写数据以及执行Ceph命令。
+
+那么，一个问题就是：如果`Cephx`系统失效之后，是不是也会导致整个Ceph系统不可用呢？这样的担心是多余的，因为Ceph的扩展机制与高可用机制也是用在了`Cephx`系统上。更多关于`Cephx`的细节，以及`Cephx`与Kerberos的区别，可以参考《[Ceph Authentication and Authorization](http://ceph.com/docs/master/rados/operations/auth-intro/)》。
