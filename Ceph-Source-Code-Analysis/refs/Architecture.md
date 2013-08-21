@@ -139,4 +139,6 @@ Ceph能够有效地进行分布式数据读取的一个很重要的原因是：�
 
 一种最简单的办法是：一个Ceph Storage Cluster中只安装一个Ceph Cluster Monitor。这种偷懒的策略会带来单点失效的问题（假如Monitor节点宕机，那么无论是Ceph Client还是Ceph OSD Daemons都无法读取数据）。
 
-为了增加可靠性以及容错性，Ceph支持将Monitors部署成一个集群。在一个Monitors集群中，
+为了增加可靠性以及容错性，Ceph支持将Monitors部署成一个集群。在一个Monitors集群中，由于各种潜在的因素，会导致一个或者多个Monitors失效，或者因为Monitors之沟通不同步，以致于不能监控整个Storage Cluster的状态。针对这种情况，在各个Monitor之间，需要达成一定的协议，从而可以统一地监控整个Ceph集群的状态。Ceph除了利用多个Monitors结点之外，还采用了![Paxos](http://en.wikipedia.org/wiki/Paxos_(computer_science))算法来建立不同Monitor结点之间的一致性，从而每个Monitor结点都可以拿到当前Ceph状态，并且拿到的信息是一致的，不同Monitor结点之间不会有差异。
+
+那么这些Monitors是如何配置的呢？请参考《![Monitor Config Reference](http://ceph.com/docs/master/rados/configuration/mon-config-ref/)》。
