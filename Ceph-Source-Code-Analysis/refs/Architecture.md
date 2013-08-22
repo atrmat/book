@@ -168,4 +168,7 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
    - Ceph OSD Daemons进程挂掉了，正常情况下是由它向Monistors节点回报状态的。
 
     当处于这种情况的时候，如何得知挂掉的Ceph OSD Daemnons的状态呢？主要有下面这两种方法：
-   - Ceph Monitor可以去Ping Ceph OSD Daemons节点。
+   - Ceph Monitor可以定时去Ping Ceph OSD Daemons节点。
+   - Ceph Monitor也授权了Ceph OSD Daemons去检查旁边的结点是否处于`down`的状态。这种相互之间的检查可以更新集群的状态，并且把这些信息更新到Ceph Monitor中。
+
+    采取这两种策略之后，Ceph Monitor就可以保留一些轻量级的进程。更多细节参考，《[Monitoring OSD](http://ceph.com/docs/master/rados/operations/monitoring-osd-pg/#monitoring-osds)》及集群《[Heartbeats](http://ceph.com/docs/master/rados/configuration/mon-osd-interaction)》的配置。
