@@ -149,12 +149,17 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
 
 那么，一个问题就是：如果`Cephx`系统失效之后，是不是也会导致整个Ceph系统不可用呢？这样的担心是多余的，因为Ceph的扩展机制与高可用机制也是用在了`Cephx`系统上。更多关于`Cephx`的细节，以及`Cephx`与Kerberos的区别，可以参考《[Ceph Authentication and Authorization](http://ceph.com/docs/master/rados/operations/auth-intro/)》。
 
-### 智能的Daemons带来超强的扩展
+### 智能Daemons带来的超强扩展
 
 在很多集群架构上，很多都采用了一种中心化的管理方式：即一个中央节点来管理其他所有的节点，比如一些节点的加入与删除等等。这种中心化的管理方式会遇到双重分发的问题：即请求要先发到中心节点，再收中心节点转发至相应的节点。除去由中心节点失效带来的单点失效的可能性之外，还会遇到的一个问题就是扩张。这种中心化的系统在从拍字节->艾字节的扩张的时候，会遇到性能的瓶颈。
 
 那么Ceph是如何打破这个瓶颈的呢？由前文的介绍可知，涉及到数据操作的，主要是有两个：Ceph Client和Ceph OSD Daemons。这两者在读、写数据块时，都需要具备集群意识。所谓集群意识，打个比方：Ceph OSD Daemons都知道其他Ceph OSD Daemons在集群中的信息。由于有了这些信息，客户端（Ceph Client、Ceph OSD Daemons）可以直接与Ceph相应的结点进行交互。
 
-由于Ceph的客户端、Ceph Monitors、Ceph OSD Daemons可以直接对应的Ceph Nodes进行交互。那么，旧有的中心结点不能支撑的任务，现在可以利用整个Ceph的CPU和RAM来进行支持。这种处理方式会带来以下几个方面的好处：
+由于Ceph的客户端、Ceph Monitors、Ceph OSD Daemons可以直接对应的Ceph Nodes进行交互。那么，旧有的中心结点不能支撑的任务，现在可以利用整个Ceph集群的CPU和RAM来进行支持。这种处理方式会带来以下几个方面的好处：
 
-1. OSDs Service Clients Directly：
+1. OSDs Service Clients Directly：对于任何网络设备而言，所能支撑的链接数目都是有限的。当集群规模上升之后，由于硬件资源的限制，中心化的架构必然会出现不能支撑的情况。通过让Ceph的客户端直接与Ceph相应的结点进行通信，Ceph集群提升了性能、集群扩张性、存储容量。当然，再也不用担心单点失效了。有时候，也需要保存一个session，这个任务就落在了Ceph OSD Daemon上面，而不再是以前那种中心结点了。
+
+2. OSD Membership and Status：Ceph OSD Daemons加入一个集群并且汇报其状态。汇报的内容可能很多，但是最低限度是要求汇报出其相应的状态是属于`up`还是`down`。
+
+    - `up`：
+    - `down`：
