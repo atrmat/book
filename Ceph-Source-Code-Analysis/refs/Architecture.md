@@ -166,3 +166,5 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
 有趣的是，当Ceph OSD Daemons的状态是Down的时候，其他结点又是如何知道他的状态呢？有两方面的困难：
    - Ceph OSD Daemons进程挂掉了，网络上其他节点上的服务不能与这个进程进行通信。
    - Ceph OSD Daemons进程挂掉了，正常情况下是由它向Monistors节点回报状态的。
+当处于这种情况的时候，如何得知挂掉的Ceph OSD Daemnons的状态呢？主要有下面这两种方法：
+   - Ceph Monitor可以去Ping Ceph OSD Daemons节点。
