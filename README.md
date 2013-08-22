@@ -8,7 +8,7 @@
 ## 书籍目录
 
 现阶段打算完成的书籍目录如下：
-  - 《Ceph源码分析》 (https://github.com/JiYou/book/tree/master/Ceph-Source-Code-Analysis)
+  - [《Ceph源码分析》] (https://github.com/JiYou/book/tree/master/Ceph-Source-Code-Analysis)
 
 ## 联系作者
 
