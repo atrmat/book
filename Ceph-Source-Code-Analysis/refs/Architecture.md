@@ -160,6 +160,5 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
 1. OSDs Service Clients Directly：对于任何网络设备而言，所能支撑的链接数目都是有限的。当集群规模上升之后，由于硬件资源的限制，中心化的架构必然会出现不能支撑的情况。通过让Ceph的客户端直接与Ceph相应的结点进行通信，Ceph集群提升了性能、集群扩张性、存储容量。当然，再也不用担心单点失效了。有时候，也需要保存一个session，这个任务就落在了Ceph OSD Daemon上面，而不再是以前那种中心结点了。
 
 2. OSD Membership and Status：Ceph OSD Daemons加入一个集群并且汇报其状态。汇报的内容可能很多，但是最低限度是要求汇报出其相应的状态是属于`up`还是`down`。
-
-    - `up`：
-    - `down`：
+   - `up`：
+   - `down`：
