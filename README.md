@@ -14,4 +14,9 @@
 
 如果喜欢这些作品，并且想与作者进行联系，那么可以通过jumail@qq.com。
 
+## 授权许可
+
+除特别声明外，本书中的内容使用[CC BY-SA 3.0 License](http://creativecommons.org/licenses/by-sa/3.0/)
+（创作共用 署名-相同方式共享3.0许可协议）授权，
+代码遵循BSD 3-Clause License（3项条款的BSD许可协议）。
 
