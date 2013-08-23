@@ -172,3 +172,7 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
    - Ceph Monitor也授权了Ceph OSD Daemons去检查旁边的结点是否处于`down`的状态。这种相互之间的检查可以更新集群的状态，并且把这些信息更新到Ceph Monitor中。
 
     采取这两种策略之后，Ceph Monitor就可以保留一些轻量级的进程。更多细节参考，《[Monitoring OSD](http://ceph.com/docs/master/rados/operations/monitoring-osd-pg/#monitoring-osds)》及集群《[Heartbeats](http://ceph.com/docs/master/rados/configuration/mon-osd-interaction)》的配置。
+
+3. Data Scrubbling：为了维护数据的永久性与完整性，Ceph OSD Daemons能够从（不同的）placement groups中提取所需要的数据。可能会想到一个问题：为什么Ceph OSD Daemons需要从（不同的）placement groups中提取数据呢？这主要是由于存储系统，为了防止丢失，一般会将数据分割成多份。那么经常需要确定的是，这些多重备份之间会不会产生差异呢？比如某一份被污染了。因此，一种通用的做法就是定时地将这些多重备份数据进行比对。这种数据之间的相互比对（比如设置周期为一天一次），能够有效地发现数据的不一致以及系统错误。不过，这种比对还算是轻量级的，还有一种深层次的比对是一位一位地进行比较。这种深层次的比对由于比较占用时间较长，周期一般设置为一周一次。与轻量级的比对相比，深层次的比较能够发现磁盘上的坏道，而轻量级的比对则达不到这种效果。更多细节参考《[数据比对](http://ceph.com/docs/master/rados/configuration/osd-config-ref#scrubbing)》。
+
+   *placement groups：是指数据逻辑上的分组，打个比方：同一部视频分割成Object之后，可能属于同一个placement group。*
