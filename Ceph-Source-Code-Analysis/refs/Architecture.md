@@ -185,6 +185,7 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
    - 当数据写入完成之后，向Ceph Client汇报结果`ok`。
 
     客户端写数据的流程如下图所示：
+
         ![客户端写数据流程](./images/wirte-data-process.png "客户端写数据流程")
 
         图1.4  客户端写数据流程
