@@ -192,4 +192,40 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
     
     由于能够对数据完成多重备份，Ceph OSD Daemons解除了客户端对于数据安全性的担心。存储数据的客户再也不用担心数据的可用性与安全性了。
 
-    
+# 动态集群管理
+
+在《扩展性与高可用性》这一节中，介绍了：
+- Ceph是如何利用CRUSH算法
+- 集群意识（Ceph Client端与Ceph OSD Daemons都有整个集群的信息）
+- 智能的Daemons能够扩展及提供高可靠性。
+
+讲了这么多，其实Ceph主要要实现的是这么一个系统：
+- 完全能够独立运行
+- 自我修复
+- 智能化的Ceph OSD Daemons
+
+接下来将要介绍CRUSH是如何工作的？CRUSH算法又是如何让Ceph存储数据的？如何实现负载均衡的？如何动态地管理整个集群的？
+
+## 存储池
+
+Ceph存储系统支持“存储池”的概念。从物理角度上看来，这个存储池并不是真实存在的。只是一系列存储的object，从逻辑上的划分。一个存储池有如下特性：
+- 对于Objects的所有者、访问权限
+- Object备份数目
+- Placement Groups的数目
+- CRUSH算法中，适用的规则
+
+*CRUSH算法中，已有一些规则。这些规则对于某些存储池而言，可供选择。*
+
+Ceph Clients从Ceph Monitor中获得Cluster Map，然后再将object写入存储池中。决定这个数据怎么写，主要有以下几个因素：
+- 存储池的大小
+- 备份的数目
+- CRUSH算法的规则
+- Placement groups的数目
+
+    ![客户端与存储池的交互](./images/data-to-pools.png "客户端与存储池的交互")
+
+    图1.4  客户端与存储池的交互
+
+
+
+
