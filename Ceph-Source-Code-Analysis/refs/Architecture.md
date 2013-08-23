@@ -186,9 +186,9 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
 
     客户端写数据的流程如下图所示：
 
-        ![客户端写数据流程](./images/wirte-data-process.png "客户端写数据流程")
+    ![客户端写数据流程](./images/wirte-data-process.png "客户端写数据流程")
 
-        图1.4  客户端写数据流程
+    图1.4  客户端写数据流程
     
     由于能够对数据完成多重备份，Ceph OSD Daemons解除了客户端对于数据安全性的担心。存储数据的客户再也不用担心数据的可用性与安全性了。
 
