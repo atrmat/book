@@ -226,6 +226,36 @@ Ceph Clients从Ceph Monitor中获得Cluster Map，然后再将object写入存储
 
 图1.5  客户端与存储池的交互
 
+## 从PG到OSD的映射
 
+*PG是指placement group*
 
+每个存储池中都有一系列placement groups。CRUSH算法动态地完成了从PG到OSD的映射。当Ceph Client存储object的时候，CRUSH会将每一个object映射至placement group。
 
+如果简单一点的想法，Ceph Client是可以直接和Ceph OSD Daemons进行交互的。现在中间多了一层PG，就需要先将object映射至PG，然后再将PG映射至Ceph OSD Daemons。
+
+### 无PG的设计
+
+为什么要采用带PG的设计呢？回顾Ceph的主要目的：Ceph存储集群是一个可以自由申缩的存储集群。首先看一下那种简单的设计（无PG的设计）：Ceph Client直接与Ceph OSD Daemons进行交互。这种简单的设计会带来什么样的问题？
+
+- 集群扩张的时候，为了负载均衡，会移动一部分数据到新加入的节点。
+- 集群中节点的损坏，磁盘故障等因素都会导致数据块的移动。
+
+在这种设计下，由于数据实际存储的位置在不断地发生变动，那么Ceph Client会经常性地去更新整个集群的信息。从而导致Ceph Client与Ceph OSD Daemons产生了较强的耦合性。
+
+### 添加PG的设计
+
+Ceph采用了添PG的设计：即在Ceph Client提交的object存储对象与Ceph OSD Daemons中间添加了一层placement group。这种设计有什么优点？
+
+- Ceph Client在与Ceph存储集群进行交互的时候，只需要知道object与placement group的映射关系。则由于placement group是逻辑的（并不是真实物理存在的），发生变动的可能性很小。因此，Ceph Client与Ceph集群整体信息交互的可能性很小。
+- object数据的存储与placement group进行关联，数据的移动，只需要更新与placement group的映射关系就可以了。这部分的工作由Ceph自己完成。
+
+这种添加了一个PG作为中间层的做法，使得Ceph可以自由地申缩。可以随意地添加新的节点与新的磁盘设备。而这种结构上的变动，对于客户端而言，不需要知道。
+
+下图显示了这种映射关系：
+
+![object、PG及OSD之间的关系](./images/object-to-pg.png "object、PG及OSD之间的关系")
+
+图1.5  object、PG及OSD之间的关系
+
+ 
