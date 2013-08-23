@@ -222,9 +222,9 @@ Ceph Clients从Ceph Monitor中获得Cluster Map，然后再将object写入存储
 - CRUSH算法的规则
 - Placement groups的数目
 
-    ![客户端与存储池的交互](./images/data-to-pools.png "客户端与存储池的交互")
+![客户端与存储池的交互](./images/data-to-pools.png "客户端与存储池的交互")
 
-    图1.4  客户端与存储池的交互
+图1.5  客户端与存储池的交互
 
 
 
