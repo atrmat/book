@@ -175,4 +175,19 @@ Ceph进行认证主要是发生在Ceph client与Ceph Monitors、Ceph OSD Daemnon
 
 3. Data Scrubbling：为了维护数据的永久性与完整性，Ceph OSD Daemons能够从（不同的）placement groups中提取所需要的数据。可能会想到一个问题：为什么Ceph OSD Daemons需要从（不同的）placement groups中提取数据呢？这主要是由于存储系统，为了防止丢失，一般会将数据分割成多份。那么经常需要确定的是，这些多重备份之间会不会产生差异呢？比如某一份被污染了。因此，一种通用的做法就是定时地将这些多重备份数据进行比对。这种数据之间的相互比对（比如设置周期为一天一次），能够有效地发现数据的不一致以及系统错误。不过，这种比对还算是轻量级的，还有一种深层次的比对是一位一位地进行比较。这种深层次的比对由于比较占用时间较长，周期一般设置为一周一次。与轻量级的比对相比，深层次的比较能够发现磁盘上的坏道，而轻量级的比对则达不到这种效果。更多细节参考《[数据比对](http://ceph.com/docs/master/rados/configuration/osd-config-ref#scrubbing)》。
 
-   *placement groups：是指数据逻辑上的分组，打个比方：同一部视频分割成Object之后，可能属于同一个placement group。*
+   *placement groups：是指数据逻辑上的分组，打个比方：同一部视频分割成Object之后，可能属于同一个placement group。但是同一个object也有可能有备份存在，这些备份就有可能属于不同的placement group了。*
+
+4. Replication：像Ceph Clients，Ceph OSD Daemons也利用了CRUSH算法。Ceph Clients一般而言是利用CRUSH算法来获取数据存储的位置，以便于读写。而Ceph OSD Daemons主要是利用CRUSH算法获得数据备份的位置。数据的负载均衡也会用到CRUSH算法。下面将介绍Ceph Client写数据的流程：
+   - Ceph Client利用CRUSH算法计算出一个object应该存放的位置。
+   - Ceph系统将些object与逻辑概念中的存储池、placement group关联起来。并且找出相应placement group中负责的Ceph OSD Daemons。
+   - Ceph Client将数据以object为单位，通过相关联的placement group负责的Ceph OSD Daemons写到Ceph系统中。
+   - 负责的Ceph OSD Daemons将object的备份分发至二级和三级Ceph OSD Daemons。
+   - 当数据写入完成之后，向Ceph Client汇报结果`ok`。
+
+    客户端写数据的流程如下图所示：
+    ![客户端写数据流程](./images/write-data-process.png "客户端写数据流程")
+
+    图1.4  客户端写数据流程
+    由于能够对数据完成多重备份，Ceph OSD Daemons解除了客户端对于数据安全性的担心。存储数据的客户再也不用担心数据的可用性与安全性了。
+
+    
