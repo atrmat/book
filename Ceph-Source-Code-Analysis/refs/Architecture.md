@@ -258,4 +258,10 @@ Ceph采用了添PG的设计：即在Ceph Client提交的object存储对象与Cep
 
 图1.5  object、PG及OSD之间的关系
 
- 
+通过Cluster Map及CRUSH算法，Ceph Client可以很容易地计算出应该和哪个OSD进行通讯，从而完成对数据的读写。
+
+## 计算PG的ID
+
+当Ceph Client需要与Ceph Monitor进行交互的时候，首先Ceph Client会获得最新的Cluster Map。利用这个最新的Cluster Map，Ceph Client知道在集群中的所有的monitors，OSDs，以及所有的metadata服务器。尽管知道了这些信息，但是Ceph Client依然不清楚想要的object是存放在什么位置。
+
+
