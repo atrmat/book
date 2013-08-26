@@ -289,6 +289,15 @@ Ceph采用了添PG的设计：即在Ceph Client提交的object存储对象与Cep
 
 为了保证数据存储的安全，Ceph Storage Cluster在存放object的时候，会保存数据的两份备份。当然，如果要求更高的安全性，可以存放更多的备份数，比如`copy_size=3`。当有备份数存在的时候，数据存放的安全性被分解了，当某个备份失效的时候，其他的备份还可以使用。
 
+回顾《智能Daemons带来的超强扩展》这一小节，会发现在区分各种Ceph OSD Daemons的时候，并没有采用osd.0、osd.1这种命名方式，而是采用了主级OSD、次级OSD依次类推。那么主级OSD有什么功能呢？
+- 在Acting Set中，主级OSD是第一个OSD。
+- 主级OSD会在所在的PG中，负责与“Peering”进程进行协同。
+- 在Ceph Client写数据的时候，当Ceph Client在与PG进行交互的时候，主级OSD是唯一首先与Client进行交互。
+
+那么什么是Acting Set呢？所谓Acting Set是指：当一系列OSD对placement group负责的时候，这一系列OSD便称之为Acting Set。需要明白的是，在一个Acting Set中OSD并不是都是正常运行的。可以想象，并不是任何时候，任何进程都可以正常运行。所以，一个Acting Set中的OSD可以分成两部分：
+- `UP Set`
+- `Down Set`
+
 
 
 
