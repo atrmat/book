@@ -277,4 +277,18 @@ Ceph采用了添PG的设计：即在Ceph Client提交的object存储对象与Cep
 - CRUSH利用提供的pool name，比如`liverpool=4`得到pool的ID。`pool_id = get_pool_id(pool_name)`。比如计算出的值`pool_id = get_pool_id("liverpool"); // pool_id == 4.`
 - CRUSH将计算出的pool ID做为PG ID的前缀。比如4.0x58。
 
+通过计算得到object的存储位置，比通过查询什么表单啊，通过服务来回调用什么的都要快很多。CRUSH算法允许Ceph Client计算一个object的存储位置，进而直接与相应的OSD进行存/取操作。
+
+## 友谊与集合
+
+在前面的章节中，曾经提到Ceph OSD Daemons会去检查别的OSD Daemons的`心跳`，并且把OSD Daemons的状态返回给Ceph Monitor。除此之外，Ceph OSD Daemons还有一个任务（peering），可以称之为"友谊"。
+
+“友谊”实际上是一个OSD Daemons中的进程，这个进程的主要目的是使处于同一个PG里面的objects、metadata的状态达成一致。事实上，如果“Peering”这个进程出错，Ceph OSD Daemons会[汇报友谊进程出错](http://ceph.com/docs/master/rados/configuration/mon-osd-interaction#osds-report-peering-failure)给Ceph Monitors。通常情况下，“友谊”进程是相互帮忙协助解决问题，从而可以完成相互之间的自我修复（类似于一个班的同学，相互之间克服缺点）。但是也有那种一直无法修复的“Peering”进程，可以参考[如何修复Peering出错](http://ceph.com/docs/master/rados/troubleshooting/troubleshooting-pg#placement-group-down-peering-failure)。毕竟每个班，都有死不悔改，要调皮到底的同学的。
+
+*注意：状态达成一致，并不意味着PG拥有了最新的内容。*
+
+为了保证数据存储的安全，Ceph Storage Cluster在存放object的时候，会保存数据的两份备份。当然，如果要求更高的安全性，可以存放更多的备份数，比如`copy_size=3`。当有备份数存在的时候，数据存放的安全性被分解了，当某个备份失效的时候，其他的备份还可以使用。
+
+
+
 
