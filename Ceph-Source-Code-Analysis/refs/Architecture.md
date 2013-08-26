@@ -295,8 +295,30 @@ Ceph采用了添PG的设计：即在Ceph Client提交的object存储对象与Cep
 - 在Ceph Client写数据的时候，当Ceph Client在与PG进行交互的时候，主级OSD是唯一首先与Client进行交互。
 
 那么什么是Acting Set呢？所谓Acting Set是指：当一系列OSD对placement group负责的时候，这一系列OSD便称之为Acting Set。需要明白的是，在一个Acting Set中OSD并不是都是正常运行的。可以想象，并不是任何时候，任何进程都可以正常运行。所以，一个Acting Set中的OSD可以分成两部分：
-- `UP Set`
-- `Down Set`
+- `UP Set`：在这个集合中，所有的OSD都在正常运行的。
+- `Down Set`：在这个集合中，所有的OSD都出了问题。
+
+由于有了这种区分，当一个PG中的主级OSD进程挂掉之后，可以从`UP Set`中选择一个OSD出来负责PG。比如，在一个Acting Set中，PG的`UP Set`中有osd.25，osd.32，osd.61三个OSD进程。首先将osd.25作为主级OSD。如果这个osd.25挂掉之后，那么次级osd.32将会上升成为负责的OSD，而osd.25将会被移出`UP Set`。
+
+## 负载均衡
+
+如果Ceph集群中新加入了一个Ceph OSD Daemons，会导致cluster map结构更新至加入之后的状态。由于新的Ceph OSD Daemons的加入，除了改变cluster map，也会导致object存储位置的变化。如果回顾《计算PG的ID》，你会发现这里面`number_of_OSD`的值已经发生了变化，在映射时，就会发生错误。
+
+接下来，将介绍在添加新的Ceph OSD Daemons的时候（参考图1.6），reblancing操作是如何进行的。尽管有些粗糙，但是这种情况已经和大一些的集群理论上是一致的。从图1.6中，也可以看出，负载均衡的时候，也并不是OSD相关的PG都会被迁移走，而只是部分被迁移走了。有趣的是，尽管底层在发生变动，但是CRUSH算法仍然是有效的，这是因为object是与PG绑定的原因。
+
+需要注意的是两方面：
+- 未移动的PG是占了大多数的，也就是说，大部分数据并未发生迁移。
+- 移走的PG对于旧有的OSD而言，扩大了旧有的OSD的空间。
+- 当rebanlance完成之后，访问数据也不会发生负载尖刺。
+
+![负载均衡](./images/rebanlance.png "负载均衡")
+
+图1.6 负载均衡
+
+## 数据持久性
+
+
+
 
 
 
