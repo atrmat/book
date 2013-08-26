@@ -262,6 +262,19 @@ Ceph采用了添PG的设计：即在Ceph Client提交的object存储对象与Cep
 
 ## 计算PG的ID
 
-当Ceph Client需要与Ceph Monitor进行交互的时候，首先Ceph Client会获得最新的Cluster Map。利用这个最新的Cluster Map，Ceph Client知道在集群中的所有的monitors，OSDs，以及所有的metadata服务器。尽管知道了这些信息，但是Ceph Client依然不清楚想要的object是存放在什么位置。
+当Ceph Client需要与Ceph Monitor进行交互的时候，首先Ceph Client会获得最新的Cluster Map。利用这个最新的Cluster Map，Ceph Client知道在集群中的所有的monitors，OSDs，以及所有的metadata服务器。尽管知道了这些信息，但是Ceph Client依然不清楚想要的object是存放在什么位置。接下来将介绍如何计算object的存储位置。
+
+对于Ceph Client而言，计算object存储位置需要的输入是：
+- object ID
+- pool name
+
+*所谓的pool是指：Ceph存放数据的时候，从逻辑上看，是将数据存放在一个命名的pool中的（比如：liverpool）。*
+
+首先，先看一下在存储object时，处理流程是怎么样的：利用object name、hash code、cluster中的OSDs数目、pool name来计算出placement group ID。具体在计算时，流程如下：
+- Ceph Client得到pool ID和object ID。比如`pool = "liverpool", object = "john"`。
+- CRUSH拿到object ID，并且计算出hash值`hash_value = hash(object_name, object_data)`。
+- CRUSH利用计算出的hash值，模上OSD的数目，得到PG的ID：`pg_id = hash_value % number_of_OSD; // pg_id = 0x58.`
+- CRUSH利用提供的pool name，比如`liverpool=4`得到pool的ID。`pool_id = get_pool_id(pool_name)`。比如计算出的值`pool_id = get_pool_id("liverpool"); // pool_id == 4.`
+- CRUSH将计算出的pool ID做为PG ID的前缀。比如4.0x58。
 
 
